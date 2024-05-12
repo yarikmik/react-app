@@ -1,15 +1,17 @@
+
+import { useState } from 'react';
 import './App.css';
-import Button from './components/Button/Button';
 import CardButton from './components/CardButton/CardButton';
 import Header from './components/Header/Header';
 import JournalAddButton from './components/JournalAddButton/JournalAddButton';
+import JournalForm from './components/JournalForm/JournalForm';
 import JournalItem from './components/JournalItem/JournalItem';
 import JournalList from './components/JournalList/JournalList';
 import Body from './layout/Body/Body';
 import LeftPanel from './layout/LeftPanel/LeftPanel';
 
 function App() {
-	const data = [
+	const firstData = [
 		{
 			title: 'Подготовка к обновлению курсов',
 			text: 'Горные походы открывают удивительные природные ландшафт',
@@ -21,30 +23,28 @@ function App() {
 			date: new Date()
 		}
 	];
+
+	const [data, setData] = useState(firstData);
+
 	return (
 		<div className='app'>
 			<LeftPanel>
 				<Header/>
 				<JournalAddButton/>
 				<JournalList>
-					<CardButton>
-						<JournalItem 
-							title={data[0].title}
-							text={data[0].text}
-							date={data[0].date}
-						/>
-					</CardButton>
-					<CardButton>
-						<JournalItem 
-							title={data[1].title}
-							text={data[1].text}
-							date={data[1].date}
-						/>
-					</CardButton>
+					{data.map(el => (
+						<CardButton>
+							<JournalItem 
+								title={el.title}
+								text={el.text}
+								date={el.date}
+							/>
+						</CardButton>
+					))}
 				</JournalList>
 			</LeftPanel>
 			<Body>
-				Body
+				<JournalForm data={data} setData={setData}/>
 			</Body>
 		</div>
 	);

@@ -2,7 +2,7 @@ import './JournalList.css';
 
 function JournalList({ children }) {
 	return (
-		<div className='journa-lList'>
+		<div className='journal-list'>
 			{ children }
 		</div>
 	);
