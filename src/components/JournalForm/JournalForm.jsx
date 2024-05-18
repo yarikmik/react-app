@@ -1,10 +1,9 @@
 import styles from './JournalForm.module.css';
 import Button from '../Button/Button';
-import { useEffect, useReducer, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import cn from 'classnames';
 import { INITIAL_STATE, formReducer } from './JournalForm.state';
-
-
+import Input from '../Input/Input';
 
 function JournalForm({ onSubmit }) {
 	const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
@@ -12,7 +11,6 @@ function JournalForm({ onSubmit }) {
 	const titleRef = useRef();
 	const dateRef = useRef();
 	const postRef = useRef();
-
 
 	const focusError = (isValid) => {
 		switch(true) {
@@ -33,8 +31,7 @@ function JournalForm({ onSubmit }) {
 		if (!isValid.date || !isValid.post || !isValid.title) {
 			focusError(isValid);
 			timerId = setTimeout(() => {
-				console.log('Очистка состояния');
-				dispatchForm({type: 'RESET_VALIDITY'});
+				dispatchForm({ type: 'RESET_VALIDITY' });
 			}, 2000);
 		}
 		return () => {
@@ -42,9 +39,8 @@ function JournalForm({ onSubmit }) {
 		};
 	}, [isValid]);
 
-
 	useEffect(() => {
-		if (isFormReadyToSubmit){
+		if (isFormReadyToSubmit) {
 			onSubmit(values);
 			dispatchForm({ type: 'CLEAR' });
 		}
@@ -54,38 +50,31 @@ function JournalForm({ onSubmit }) {
 		dispatchForm({ type: 'SET_VALUE', payload: { [e.target.name]: e.target.value }});
 	};
 
-
 	const addJournalItem = (e) => {
 		e.preventDefault();
 		dispatchForm({ type: 'SUBMIT' });
-
 	};
 
 	return (
 		<form className={styles['journal-form']} onSubmit={addJournalItem}>
 			<div>
-				<input type='text' onChange={onChange} value={values.title} ref={titleRef} name='title' className={cn(styles['input-title'], {
-					[styles['invalid']]: !isValid.title
-				})}/>
+				<Input type='text' ref={titleRef} onChange={onChange} value={values.title} name='title' isValid={isValid.title} appearence ='title'/>
 			</div>
 			<div className={styles['form-row']}>
 				<label htmlFor="date" className={styles['form-label']}>
 					<img src='/calendar.svg' alt='Иконка календаря'/>
 					<span>Дата</span>
 				</label>
-				<input type='date' onChange={onChange} value={values.date} ref={dateRef}  name='date' id="date" className={cn(styles['input'], {
-					[styles['invalid']]: !isValid.date
-				})} />
+				<Input type='date' ref={dateRef} onChange={onChange} name='date' value={values.date} id="date" isValid={isValid.date}/>
 			</div>
 			<div className={styles['form-row']}>
 				<label htmlFor="tag" className={styles['form-label']}>
 					<img src='/folder.svg' alt='Иконка папки'/>
 					<span>Метки</span>
 				</label>
-				<input type='text' id="tag" onChange={onChange} value={values.tag} name='tag' className={styles['input']} />
+				<Input type='text' onChange={onChange} id="tag" value={values.tag} name='tag' />
 			</div>
-			
-			<textarea name="post" id="" onChange={onChange} value={values.post} ref={postRef} cols="30" rows="10" className={cn(styles['input'], {
+			<textarea ref={postRef} name="post" id="" onChange={onChange} value={values.post} cols="30" rows="10" className={cn(styles['input'], {
 				[styles['invalid']]: !isValid.post
 			})}></textarea>
 			<Button text="Сохранить" />
